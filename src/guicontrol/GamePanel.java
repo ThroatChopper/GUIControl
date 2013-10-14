@@ -3,7 +3,6 @@
  * and open the template in the editor.
  */
 package guicontrol;
-
 /**
  *
  * @author Tiaan
@@ -13,8 +12,42 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * Creates new form ActiveGamePanel
      */
-    public GamePanel() {
+    private GUIController controller;
+    private GameLobbyPanel lobbyScreen;
+    private Game game;
+    
+    public GamePanel(GUIController controllerIn) {      //Needs to receive a game object
         initComponents();
+        controller = controllerIn;
+        lobbyScreen = new GameLobbyPanel(controller);
+        this.add(lobbyScreen, 0);
+        lobbyScreen.setBounds(0,0,795,577);
+        this.validate();
+        this.repaint();
+    }
+    
+    public void initializeLobby(String gameName, int asHost) {
+        if (asHost == 1)
+            lobbyScreen.initializeLobbyAsHost(gameName);
+        else {
+            lobbyScreen.initializeLobby(gameName);
+            lobbyScreen.addToPlayerList("Waiting for host to start...");
+        }
+    }
+    
+    public void updateLobbyPlayersList(String playerName, int addName) {
+        if (addName == 1)
+            lobbyScreen.addToPlayerList(playerName);
+        else
+            lobbyScreen.removeFromPlayersList(playerName);
+    }
+    
+    public void lobbyMessageSent() {
+        lobbyScreen.displaySentMessage();
+    }
+    
+    public void initializeGameScreen() {
+        
     }
 
     /**
@@ -26,31 +59,18 @@ public class GamePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-
-        setPreferredSize(new java.awt.Dimension(595, 427));
-
-        jLabel1.setText("hello im here");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(222, 222, 222)
-                .addComponent(jLabel1)
-                .addContainerGap(298, Short.MAX_VALUE))
+            .addGap(0, 795, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(182, 182, 182)
-                .addComponent(jLabel1)
-                .addContainerGap(229, Short.MAX_VALUE))
+            .addGap(0, 577, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 
 }

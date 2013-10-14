@@ -9,6 +9,8 @@ public class GameForm extends javax.swing.JFrame {
 
     private GUIController controller;
     private Vector<String> gamesListVector;
+    private String messageTemp;
+    private String recipientsTemp;
     
     public GameForm(GUIController controllerIn) {
         initComponents();
@@ -32,10 +34,28 @@ public class GameForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "That game is no longer available to join", "Join error",JOptionPane.INFORMATION_MESSAGE);
     }
     
+    public void displayCreateError() {
+        JOptionPane.showMessageDialog(null, "Unable to create game", "Create error",JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     public void addTab(JPanel newPanel, String gameName) {
         tabbedPanel.addTab(gameName, newPanel);
+        tabbedPanel.setSelectedComponent(newPanel);
+    }
+    
+    public void indicateGameTerminated(GamePanel terminatedGame, String quittingPlayer, String gameName) {
+        tabbedPanel.setSelectedIndex(0);
+        tabbedPanel.remove(terminatedGame);
+        JOptionPane.showMessageDialog(null, gameName + " has ended because " + quittingPlayer + " decided to quit like an asshole", "Game terminated",JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void displaySentMessage() {      //REMEMBER TO ADD TO THIS YOUR USERNAME
+        taChatOut.append("Your username here  -> [" + recipientsTemp.replace(":", "][") + "] : " + messageTemp + "\n");
     }
 
+    public void displayMessageError() {
+        JOptionPane.showMessageDialog(null, "One or more of the chosen recipient usernames are not valid - Message not delivered to those users", "Message error",JOptionPane.INFORMATION_MESSAGE);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,10 +74,20 @@ public class GameForm extends javax.swing.JFrame {
         btnCreateGame = new javax.swing.JButton();
         tfGameSearch = new javax.swing.JTextField();
         btnGameSearch = new javax.swing.JButton();
+        pnlChat = new javax.swing.JPanel();
+        spChatScrollPanel = new javax.swing.JScrollPane();
+        taChatOut = new javax.swing.JTextArea();
+        spChatInScrollPanel = new javax.swing.JScrollPane();
+        taChatIn = new javax.swing.JTextArea();
+        tfRecipients = new javax.swing.JTextField();
+        lblUsrRequest = new javax.swing.JLabel();
+        btnSend = new javax.swing.JButton();
+        lblUsrRequest1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
+        listGamesList.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         listGamesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollPanelGL.setViewportView(listGamesList);
 
@@ -94,49 +124,107 @@ public class GameForm extends javax.swing.JFrame {
         pnlGameBrowserLayout.setHorizontalGroup(
             pnlGameBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGameBrowserLayout.createSequentialGroup()
-                .addGroup(pnlGameBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(scrollPanelGL, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlGameBrowserLayout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(tfGameSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24)
-                        .addComponent(btnGameSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlGameBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCreateGame, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                    .addComponent(btnRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnJoinGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(pnlGameBrowserLayout.createSequentialGroup()
+                        .addComponent(tfGameSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnGameSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
+                    .addComponent(scrollPanelGL))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlGameBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnJoinGame, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCreateGame, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         pnlGameBrowserLayout.setVerticalGroup(
             pnlGameBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGameBrowserLayout.createSequentialGroup()
-                .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlGameBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnGameSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(tfGameSearch))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnJoinGame, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCreateGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlGameBrowserLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(pnlGameBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfGameSearch)
                     .addGroup(pnlGameBrowserLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnGameSearch)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPanelGL, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnJoinGame, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCreateGame, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(scrollPanelGL)))
         );
 
         tabbedPanel.addTab("Game Browser", pnlGameBrowser);
+
+        taChatOut.setColumns(20);
+        taChatOut.setFont(new java.awt.Font("Monospaced", 1, 18)); // NOI18N
+        taChatOut.setLineWrap(true);
+        taChatOut.setRows(5);
+        taChatOut.setWrapStyleWord(true);
+        taChatOut.setEnabled(false);
+        spChatScrollPanel.setViewportView(taChatOut);
+
+        taChatIn.setColumns(20);
+        taChatIn.setLineWrap(true);
+        taChatIn.setRows(5);
+        taChatIn.setWrapStyleWord(true);
+        spChatInScrollPanel.setViewportView(taChatIn);
+
+        lblUsrRequest.setText("Please enter recipient username(s):");
+
+        btnSend.setText("Send");
+        btnSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendActionPerformed(evt);
+            }
+        });
+
+        lblUsrRequest1.setText("[seperate usernames with colons]");
+
+        javax.swing.GroupLayout pnlChatLayout = new javax.swing.GroupLayout(pnlChat);
+        pnlChat.setLayout(pnlChatLayout);
+        pnlChatLayout.setHorizontalGroup(
+            pnlChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(spChatScrollPanel)
+            .addGroup(pnlChatLayout.createSequentialGroup()
+                .addComponent(spChatInScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
+                .addGroup(pnlChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(tfRecipients, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlChatLayout.createSequentialGroup()
+                        .addGroup(pnlChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblUsrRequest1)
+                            .addComponent(lblUsrRequest))
+                        .addGap(109, 109, 109))
+                    .addComponent(btnSend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        pnlChatLayout.setVerticalGroup(
+            pnlChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlChatLayout.createSequentialGroup()
+                .addComponent(spChatScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnlChatLayout.createSequentialGroup()
+                        .addComponent(lblUsrRequest)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblUsrRequest1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfRecipients, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spChatInScrollPanel)))
+        );
+
+        tabbedPanel.addTab("Chat", pnlChat);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPanel)
+            .addComponent(tabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPanel)
+            .addComponent(tabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
         );
 
         tabbedPanel.getAccessibleContext().setAccessibleName("PanelTab");
@@ -149,12 +237,14 @@ public class GameForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnJoinGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJoinGameActionPerformed
-        controller.attemptGameJoin((String) listGamesList.getSelectedValue());
+        if (listGamesList.getSelectedValue() != null)
+            controller.attemptGameJoin((String) listGamesList.getSelectedValue());
     }//GEN-LAST:event_btnJoinGameActionPerformed
 
     private void btnCreateGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateGameActionPerformed
+        controller.createGame();
         addToGamesList("hello");        //TEST CODE
-        controller.gameJoinUnsuccessful();  //TEST CODE
+        controller.gameCreatedSuccessfully();  //TEST CODE
         
     }//GEN-LAST:event_btnCreateGameActionPerformed
 
@@ -162,16 +252,37 @@ public class GameForm extends javax.swing.JFrame {
         controller.requestGamesList(tfGameSearch.getText());
     }//GEN-LAST:event_btnGameSearchActionPerformed
 
+    private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+         if ((tfRecipients.getText().length() != 0) && (tfRecipients.getText().matches("[A-Za-z0-9:]+"))) {
+            messageTemp = taChatIn.getText();
+            recipientsTemp = tfRecipients.getText();
+            controller.sendMessage(recipientsTemp, messageTemp);
+            taChatIn.setText("");
+            controller.messageSentSuccess(); //TEST CODE
+         }
+         else
+             JOptionPane.showMessageDialog(null, "Please ensure all usernames are valid", "Recipient username error",JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnSendActionPerformed
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateGame;
     private javax.swing.JButton btnGameSearch;
     private javax.swing.JButton btnJoinGame;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnSend;
+    private javax.swing.JLabel lblUsrRequest;
+    private javax.swing.JLabel lblUsrRequest1;
     private javax.swing.JList listGamesList;
+    private javax.swing.JPanel pnlChat;
     private javax.swing.JPanel pnlGameBrowser;
     private javax.swing.JScrollPane scrollPanelGL;
+    private javax.swing.JScrollPane spChatInScrollPanel;
+    private javax.swing.JScrollPane spChatScrollPanel;
+    private javax.swing.JTextArea taChatIn;
+    private javax.swing.JTextArea taChatOut;
     private javax.swing.JTabbedPane tabbedPanel;
     private javax.swing.JTextField tfGameSearch;
+    private javax.swing.JTextField tfRecipients;
     // End of variables declaration//GEN-END:variables
 }
